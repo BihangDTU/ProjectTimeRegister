@@ -1,22 +1,43 @@
 ﻿@model IEnumerable<ProjectTimeManagement.Models.Project>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Project";
 }
 
-<h2>Index</h2>
+<h3>@ViewBag.Title</h3>
+<h3>
+    @Html.ActionLink("Create New Project", "Create")
+</h3>
+    <table class="table">
+        <tr>
+            <th>Created Data</th>
+            <th>Project Name</th>
+            <th>CreatorName</th>
+            <th>Total Hours</th>
+            <th>&nbsp;</th>
+        </tr>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>Date</th>
-        <th>Activity</th>
-        <th>Duration</th>
-        <th class="hidden-xs">Intensity</th>
-        <th>&nbsp;</th>
-    </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectCreatedTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hours)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ProjectId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ProjectId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ProjectId })
+                </td>
+            </tr>
+        }
 
-
-</table>
+    </table>

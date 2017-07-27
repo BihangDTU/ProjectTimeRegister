@@ -1,4 +1,5 @@
 ﻿using ProjectTimeManagement.Context;
+using ProjectTimeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,12 @@ namespace ProjectTimeManagement.Controllers
     {
         ProjectContext db = new ProjectContext();
 
-        // GET: Project
         public ActionResult Index()
         {
             return View(db.Projects.ToList());
         }
 
-        // GET: Project/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Project/Create
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
@@ -31,18 +25,15 @@ namespace ProjectTimeManagement.Controllers
 
         // POST: Project/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(Project project)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                db.Projects.Add(project);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(project);
         }
 
         // GET: Project/Edit/5
