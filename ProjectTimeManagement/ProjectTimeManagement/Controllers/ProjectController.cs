@@ -36,6 +36,30 @@ namespace ProjectTimeManagement.Controllers
             return View(project);
         }
 
+        [HttpGet]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Project/Create
+        [HttpPost]
+        public ActionResult Register(Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Projects.Add(project);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(project);
+        }
+
+        public ActionResult Details()
+        {
+            return View(db.Projects.ToList());
+        }
+
         // GET: Project/Edit/5
         public ActionResult Edit(int id)
         {

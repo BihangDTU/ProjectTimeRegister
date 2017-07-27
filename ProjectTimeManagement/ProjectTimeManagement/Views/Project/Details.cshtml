@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ProjectTimeManagement.Models.Project>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<table class="table">
+    <tr>
+        <th>Register Data</th>
+        <th>Hours</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegisterTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                <div class="pull-right">
+                    <a href="@Url.Action("Edit", new { id = item.ProjectId })" class="btn btn-warning btn-sm margin-right">
+                        <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit</span>
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = item.ProjectId })" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="form-group">
+    <div style="text-align: center;" class="pad-top">
+        <a href="@Url.Action("Index")" class="btn btn-warning btn-lg">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+    </div>
+</div>

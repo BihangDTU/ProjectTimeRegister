@@ -1,47 +1,25 @@
 ﻿@model ProjectTimeManagement.Models.Project
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Register";
 }
+
+<h2>Register</h2>
+
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>New Project</h4>
+        <h4>Project</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
         <div class="form-group">
             @Html.LabelFor(model => model.ProjectId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.ProjectId, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.ProjectId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProjectCreatedTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProjectCreatedTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProjectCreatedTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatorName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatorName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatorName, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -64,7 +42,7 @@
         <div class="form-group">
             <div style="text-align: center;" class="pad-top">
                 <button type="submit" class="btn btn-success btn-lg margin-right">
-                    <span class="glyphicon glyphicon-save"></span> Create
+                    <span class="glyphicon glyphicon-save"></span> Save
                 </button>
                 <a href="@Url.Action("Index")" class="btn btn-warning btn-lg">
                     <span class="glyphicon glyphicon-remove"></span> Cancel

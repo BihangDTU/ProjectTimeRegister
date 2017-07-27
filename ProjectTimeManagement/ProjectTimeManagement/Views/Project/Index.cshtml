@@ -33,9 +33,17 @@
                     @Html.DisplayFor(modelItem => item.Hours)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ProjectId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.ProjectId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ProjectId })
+                    <div class="pull-right">
+                        <a href="@Url.Action("Register", new { id = item.ProjectId })" class="btn btn-warning btn-sm margin-right">
+                            <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Register</span>
+                        </a>
+                        <a href="@Url.Action("Details", new { id = item.ProjectId })" class="btn btn-warning btn-sm margin-right">
+                            <span class="glyphicon glyphicon-user"></span><span class="hidden-xs"> Details</span>
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.ProjectId })" class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>
+                        </a>
+                    </div>
                 </td>
             </tr>
         }
