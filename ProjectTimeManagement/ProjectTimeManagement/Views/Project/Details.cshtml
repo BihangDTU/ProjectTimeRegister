@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectTimeManagement.Models.Project>
+﻿@model IEnumerable<ProjectTimeManagement.Models.TimeTable>
 
 @{
     ViewBag.Title = "Details";
@@ -9,6 +9,7 @@
 <table class="table">
     <tr>
         <th>Register Data</th>
+        <th>Name</th>
         <th>Hours</th>
         <th></th>
     </tr>
@@ -18,6 +19,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.RegisterTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegisterName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Hours)
@@ -41,6 +45,9 @@
     <div style="text-align: center;" class="pad-top">
         <a href="@Url.Action("Index")" class="btn btn-warning btn-lg">
             <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+        <a href="@Url.Action("Index")" class="btn bg-warning btn-lg">
+            <span></span> Generate Invoice
         </a>
     </div>
 </div>

@@ -13,7 +13,6 @@
             <th>Created Data</th>
             <th>Project Name</th>
             <th>CreatorName</th>
-            <th>Total Hours</th>
             <th>&nbsp;</th>
         </tr>
 
@@ -21,16 +20,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectCreatedTime)
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatorName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Hours)
                 </td>
                 <td>
                     <div class="pull-right">

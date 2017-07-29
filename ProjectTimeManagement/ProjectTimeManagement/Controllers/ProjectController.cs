@@ -3,6 +3,7 @@ using ProjectTimeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -25,15 +26,29 @@ namespace ProjectTimeManagement.Controllers
 
         // POST: Project/Create
         [HttpPost]
-        public ActionResult Create(Project project)
+        public ActionResult Create(ProjectViewModel model)
         {
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
+                Customer c = new Customer();
+                c.CustomerName = model.CustomerName;
+                c.Email = model.Email;
+                c.Phone = model.Phone;
+                c.Address = model.Address;
+                db.Customers.Add(c);
                 db.SaveChanges();
+
+                Project p = new Project();
+                p.CreatorName = model.CreatorName;
+                p.ProjectName = model.ProjectName;
+                p.CreatedTime = model.CreatedTime;
+                p.CustomerId = c.CustomerId;
+                db.Projects.Add(p);
+                db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            return View(project);
+            return View(model);
         }
 
         [HttpGet]
@@ -44,20 +59,37 @@ namespace ProjectTimeManagement.Controllers
 
         // POST: Project/Create
         [HttpPost]
-        public ActionResult Register(Project project)
+        public ActionResult Register(int? id, TimeTable timeTable)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
+                TimeTable t = new TimeTable();
+                t.ProjectId = id ?? default(int);
+                t.RegisterTime = timeTable.RegisterTime;
+                t.RegisterName = timeTable.RegisterName;
+                t.Hours = timeTable.Hours;
+
+                db.TimeTables.Add(t);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(project);
+            return View(timeTable);
         }
 
-        public ActionResult Details()
+        public ActionResult Details(int? id)
         {
-            return View(db.Projects.ToList());
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return View((from timeTable in db.TimeTables
+                         where timeTable.ProjectId == id
+                         select timeTable).ToList());
         }
 
         // GET: Project/Edit/5
@@ -103,5 +135,6 @@ namespace ProjectTimeManagement.Controllers
                 return View();
             }
         }
+
     }
 }
