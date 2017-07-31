@@ -120,26 +120,71 @@ namespace ProjectTimeManagement.Controllers
             return RedirectToAction("Details/" + timeTable.ProjectId.ToString());
         }
 
-        // GET: Project/Delete/5
-        public ActionResult Delete(int id)
+        
+        public ActionResult DeleteRegister(int? id)
         {
-            return View();
+            if(id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TimeTable timeTable = (from tT in db.TimeTables
+                                   where tT.Id == id
+                                   select tT).Single();
+            if(timeTable == null)
+            {
+                return HttpNotFound();
+            }
+            return View(timeTable);
         }
 
         // POST: Project/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult DeleteRegister(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            TimeTable timeTable = (from tT in db.TimeTables
+                                   where tT.Id == id
+                                   select tT).Single();
 
-                return RedirectToAction("Index");
-            }
-            catch
+            db.TimeTables.Remove(timeTable);
+            db.SaveChanges();
+            return RedirectToAction("Details/" + timeTable.ProjectId.ToString());
+        }
+
+        public ActionResult DeleteProject(int? id)
+        {
+            if (id == null)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            Project project = (from p in db.Projects
+                               where p.ProjectId == id
+                               select p).Single();
+            if (project == null)
+            {
+                return HttpNotFound();
+            }
+            return View(project);
+        }
+
+        // POST: Project/DeleteProject
+        [HttpPost]
+        public ActionResult DeleteProject(int id)
+        {
+            Project project = (from p in db.Projects
+                               where p.ProjectId == id
+                               select p).Single();
+
+            List<TimeTable> timeTable = (from tT in db.TimeTables
+                                         where tT.ProjectId == id
+                                         select tT).ToList();
+
+            db.Projects.Remove(project);
+            foreach(var item in timeTable)
+            {
+                db.TimeTables.Remove(item);
+            } 
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         string accountNo = "0123456789012";

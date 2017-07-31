@@ -203,6 +203,8 @@
     <Content Include="Views\Project\Details.cshtml" />
     <Content Include="Views\Project\Register.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
+    <Content Include="Views\Project\DeleteRegister.cshtml" />
+    <Content Include="Views\Project\DeleteProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
