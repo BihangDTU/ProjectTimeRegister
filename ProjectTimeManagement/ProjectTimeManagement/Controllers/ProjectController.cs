@@ -33,6 +33,36 @@ namespace ProjectTimeManagement.Controllers
         [HttpPost]
         public ActionResult Create(ProjectViewModel model)
         {
+            //Server - Side Validation
+            if (ModelState.IsValidField("ProjectName") && model.ProjectName == null)
+            {
+                ModelState.AddModelError("ProjectName", "The Project Name field is required.");
+            }
+            if (ModelState.IsValidField("CreatedTime") && model.CreatedTime == null)
+            {
+                ModelState.AddModelError("CreatedTime", "The Created Time  field is required.");
+            }
+            if (ModelState.IsValidField("CreatorName") && model.CreatorName == null)
+            {
+                ModelState.AddModelError("CreatorName", "The Creator Name  field is required.");
+            }
+            if (ModelState.IsValidField("CustomerName") && model.CustomerName == null)
+            {
+                ModelState.AddModelError("CustomerName", "The Customer Name  field is required.");
+            }
+            if (ModelState.IsValidField("Email") && model.Email == null)
+            {
+                ModelState.AddModelError("Email", "The Email field is required.");
+            }
+            if (ModelState.IsValidField("Phone") && model.Phone == null)
+            {
+                ModelState.AddModelError("Phone", "The Phone field is required.");
+            }
+            if (ModelState.IsValidField("Address") && model.Address == null)
+            {
+                ModelState.AddModelError("Address", "The Address field is required.");
+            }
+
             if (ModelState.IsValid)
             {
                 Customer c = new Customer();
@@ -69,6 +99,21 @@ namespace ProjectTimeManagement.Controllers
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Server - Side Validation
+            if (ModelState.IsValidField("RegisterTime") && timeTable.RegisterName == null)
+            {
+                ModelState.AddModelError("RegisterTime", "The RegisterName field is required.");
+            }
+
+            if (ModelState.IsValidField("RegisterName") && timeTable.RegisterName == null)
+            {
+                ModelState.AddModelError("RegisterName", "The RegisterName field is required.");
+            }
+
+            if (ModelState.IsValidField("Hours") && timeTable.Hours <= 0)
+            {
+                ModelState.AddModelError("Hours", "The Hours field value must be greater than 0");
             }
 
             if (ModelState.IsValid)
