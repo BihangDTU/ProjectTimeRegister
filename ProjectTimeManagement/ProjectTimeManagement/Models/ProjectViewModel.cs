@@ -8,7 +8,7 @@ namespace ProjectTimeManagement.Models
     public class ProjectViewModel
     {
         public int ProjectId { get; set; }
-        public string CreatedTime { get; set; }
+        public DateTime CreatedTime { get; set; }
         public string ProjectName { get; set; }
         public string CreatorName { get; set; }
         public int CustomerId { get; set; }

@@ -26,7 +26,11 @@ namespace ProjectTimeManagement.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            var project = new ProjectViewModel()
+            {
+                CreatedTime = DateTime.Today
+            };
+            return View(project);
         }
 
         // POST: Project/Create
@@ -89,7 +93,11 @@ namespace ProjectTimeManagement.Controllers
         [HttpGet]
         public ActionResult Register()
         {
-            return View();
+            var timeTable = new TimeTable()
+            {
+                RegisterTime = DateTime.Today
+            };
+            return View(timeTable);
         }
 
         // POST: Project/Create
@@ -103,7 +111,7 @@ namespace ProjectTimeManagement.Controllers
             //Server - Side Validation
             if (ModelState.IsValidField("RegisterTime") && timeTable.RegisterName == null)
             {
-                ModelState.AddModelError("RegisterTime", "The RegisterName field is required.");
+                ModelState.AddModelError("RegisterTime", "The RegisterTime field is required.");
             }
 
             if (ModelState.IsValidField("RegisterName") && timeTable.RegisterName == null)
@@ -144,9 +152,19 @@ namespace ProjectTimeManagement.Controllers
 
         // GET: Project/Edit/5
         [HttpGet]
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
-            return View();
+            TimeTable timeTableDatabase = (from tT in db.TimeTables
+                                                 where tT.Id == id
+                                                 select tT).Single();
+
+            TimeTable timeTble = new TimeTable()
+            {
+                RegisterName = timeTableDatabase.RegisterName,
+                Hours = timeTableDatabase.Hours
+            };
+
+            return View(timeTble);
         }
 
         // POST: Project/Edit/5
@@ -411,7 +429,7 @@ namespace ProjectTimeManagement.Controllers
 
             foreach (var content in timeTable)
             {
-                AddCellToBody(tableLayout, content.RegisterTime);
+                AddCellToBody(tableLayout, content.RegisterTime.ToString());
                 AddCellToBody(tableLayout, content.RegisterName);
                 AddCellToBody(tableLayout, content.Hours.ToString());
             }

@@ -12,7 +12,8 @@ namespace ProjectTimeManagement.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProjectId { get; set; }
-        public string CreatedTime { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime CreatedTime { get; set; }
         public string ProjectName { get; set; }
         public string CreatorName { get; set; }
         // Foreign key
@@ -39,7 +40,8 @@ namespace ProjectTimeManagement.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string RegisterTime { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime RegisterTime { get; set; }
         public string RegisterName { get; set; }
         public int Hours { get; set; }
         // Foreign key
