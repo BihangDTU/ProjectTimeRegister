@@ -20,7 +20,10 @@ namespace ProjectTimeManagement.Controllers
 
         public ActionResult Index()
         {
-            return View(db.Projects.ToList());
+            List<Project> project = db.Projects.OrderByDescending(e => e.CreatedTime)
+                                    .ThenByDescending(e => e.ProjectId).ToList();
+
+            return View(project);
         }
 
         [HttpGet]
@@ -138,16 +141,32 @@ namespace ProjectTimeManagement.Controllers
             }
             return View(timeTable);
         }
-
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View((from timeTable in db.TimeTables
-                         where timeTable.ProjectId == id
-                         select timeTable).ToList());
+
+            List<TimeTable> timeTableList = (from timeTable in db.TimeTables
+                                             where timeTable.ProjectId == id
+                                             select timeTable).ToList();
+            string totalHours = (from tT in db.TimeTables
+                                 where tT.ProjectId == id
+                                 select tT.Hours).ToList().Sum().ToString();
+
+            string projectName = (from p in db.Projects
+                                  where p.ProjectId == id
+                                  select p.ProjectName).ToList().ElementAt(0).ToString();
+
+            ViewBag.TotalHours = totalHours;
+            ViewBag.ProjectName = "Total hours spend on " + projectName + " Project";
+            return View(timeTableList);
+        }
+
+        public ActionResult GenerateInvoice(int? id)
+        {
+            return View();
         }
 
         // GET: Project/Edit/5
@@ -156,7 +175,7 @@ namespace ProjectTimeManagement.Controllers
         {
             TimeTable timeTableDatabase = (from tT in db.TimeTables
                                                  where tT.Id == id
-                                                 select tT).Single();
+                                                 select tT).FirstOrDefault();
 
             TimeTable timeTble = new TimeTable()
             {
@@ -174,7 +193,7 @@ namespace ProjectTimeManagement.Controllers
 
             TimeTable timeTable = (from tT in db.TimeTables
                                     where tT.Id == id
-                                    select tT).Single();
+                                    select tT).FirstOrDefault();
 
             timeTable.RegisterName = collection.RegisterName;
             timeTable.Hours = collection.Hours;
@@ -183,7 +202,30 @@ namespace ProjectTimeManagement.Controllers
             return RedirectToAction("Details/" + timeTable.ProjectId.ToString());
         }
 
-        
+        public ActionResult CustomerInfo(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Project project = (from p in db.Projects
+                             where p.ProjectId == id
+                             select p).FirstOrDefault();
+
+            Customer customer = (from c in db.Customers
+                               where c.CustomerId == project.ProjectId
+                                 select c).FirstOrDefault();
+            if (customer == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.ProjectName = project.ProjectName;
+            return View(customer);
+        }
+
+
+
         public ActionResult DeleteRegister(int? id)
         {
             if(id == null)
@@ -192,7 +234,7 @@ namespace ProjectTimeManagement.Controllers
             }
             TimeTable timeTable = (from tT in db.TimeTables
                                    where tT.Id == id
-                                   select tT).Single();
+                                   select tT).FirstOrDefault();
             if(timeTable == null)
             {
                 return HttpNotFound();
@@ -206,7 +248,7 @@ namespace ProjectTimeManagement.Controllers
         {
             TimeTable timeTable = (from tT in db.TimeTables
                                    where tT.Id == id
-                                   select tT).Single();
+                                   select tT).FirstOrDefault();
 
             db.TimeTables.Remove(timeTable);
             db.SaveChanges();
@@ -221,7 +263,7 @@ namespace ProjectTimeManagement.Controllers
             }
             Project project = (from p in db.Projects
                                where p.ProjectId == id
-                               select p).Single();
+                               select p).FirstOrDefault();
             if (project == null)
             {
                 return HttpNotFound();
@@ -235,7 +277,7 @@ namespace ProjectTimeManagement.Controllers
         {
             Project project = (from p in db.Projects
                                where p.ProjectId == id
-                               select p).Single();
+                               select p).FirstOrDefault();
 
             List<TimeTable> timeTable = (from tT in db.TimeTables
                                          where tT.ProjectId == id

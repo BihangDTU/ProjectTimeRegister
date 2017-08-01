@@ -207,6 +207,8 @@
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\DeleteRegister.cshtml" />
     <Content Include="Views\Project\DeleteProject.cshtml" />
+    <Content Include="Views\Project\CustomerInfo.cshtml" />
+    <Content Include="Views\Project\GenerateInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

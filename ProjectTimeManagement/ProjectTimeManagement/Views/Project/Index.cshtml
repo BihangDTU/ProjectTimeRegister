@@ -12,7 +12,7 @@
         <tr>
             <th>Created Data</th>
             <th>Project Name</th>
-            <th>CreatorName</th>
+            <th>Creator Name</th>
             <th>&nbsp;</th>
         </tr>
 
@@ -33,8 +33,11 @@
                         <a href="@Url.Action("Register", new { id = item.ProjectId })" class="btn btn-warning btn-sm margin-right">
                             <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Register</span>
                         </a>
-                        <a href="@Url.Action("Details", new { id = item.ProjectId })" class="btn btn-warning btn-sm margin-right">
+                        <a href="@Url.Action("Details", new { id = item.ProjectId })" class="btn btn-info btn-sm margin-right">
                             <span class="glyphicon glyphicon-user"></span><span class="hidden-xs"> Details</span>
+                        </a>
+                        <a href="@Url.Action("CustomerInfo", new { id = item.ProjectId })" class="btn btn-info btn-sm margin-right">
+                            <span class="glyphicon glyphicon-user"></span><span class="hidden-xs"> Customer Info</span>
                         </a>
                         <a href="@Url.Action("DeleteProject", new { id = item.ProjectId })" class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>

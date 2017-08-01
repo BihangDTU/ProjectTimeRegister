@@ -4,6 +4,13 @@
     ViewBag.Title = "Details";
 }
 
+<div class="stats">
+    <h2 class="stats-header h3">@ViewBag.ProjectName</h2>
+    <div class="stats-left">
+        Total hours: <span class="stats-number">@ViewBag.TotalHours</span>
+    </div>
+</div>
+
 <h2>Details</h2>
 
 <table class="table">
@@ -41,13 +48,17 @@
 
 </table>
 
+
 <div class="form-group">
     <div style="text-align: center;" class="pad-top">
-        <a href="@Url.Action("Index")" class="btn btn-warning btn-lg">
+        <a href="@Url.Action("Index")" class="btn btn-default btn-lg">
             <span class="glyphicon glyphicon-arrow-left"></span> Back
         </a>
-        <a href="@Url.Action("CreatePdf", new { id = Url.RequestContext.RouteData.Values["id"] })" class="btn bg-warning btn-lg">
-            <span></span> Generate Invoice
+       @* <a href="@Url.Action("CreatePdf", new { id = Url.RequestContext.RouteData.Values["id"] })" class="btn btn-default btn-lg">
+        <span></span> Generate Invoice
+    </a>*@
+        <a href="@Url.Action("GenerateInvoice")" class="btn btn-default btn-lg">
+            Generate Invoice <span class="glyphicon glyphicon-arrow-right"></span> 
         </a>
     </div>
 </div>
