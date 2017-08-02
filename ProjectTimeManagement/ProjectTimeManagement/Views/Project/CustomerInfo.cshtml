@@ -48,6 +48,9 @@
             <a href="@Url.Action("Index")" class="btn btn-default btn-lg">
                 <span class="glyphicon glyphicon-arrow-left"></span> Back
             </a>
+            <a href="@Url.Action("EditCustomerInfo", new { id = Url.RequestContext.RouteData.Values["id"] })" class="btn btn-default btn-lg">
+                 Edit <span class="glyphicon glyphicon-arrow-right"></span>
+            </a>
         </div>
     </div>
 

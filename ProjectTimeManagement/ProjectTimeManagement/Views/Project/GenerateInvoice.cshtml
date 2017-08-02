@@ -1,11 +1,11 @@
-﻿@model ProjectTimeManagement.Models.TimeTable
+﻿@model ProjectTimeManagement.Models.DateRange
 
 @{
     ViewBag.Title = "GenerateInvoice";
 }
 
 <h2>Generate Invoice</h2>
-
+<h2></h2>
 
 @using (Html.BeginForm()) 
 {
@@ -19,8 +19,8 @@
             @Html.Label("Start date:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @*" @Html.TextBoxFor(model => model.RegisterTime, new { htmlAttributes = new { @class = "form-control datepicker"} })*@
-                @Html.TextBoxFor(model => model.RegisterTime, "{0:d}", new { @class = "form-control datepicker" })
-                @Html.ValidationMessageFor(model => model.RegisterTime, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.DateFrom, "{0:d}", new { @class = "form-control datepicker" })
+                @Html.ValidationMessageFor(model => model.DateFrom, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -28,19 +28,19 @@
             @Html.Label("End date:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @*@Html.TextBoxFor(model => model.RegisterTime, new { htmlAttributes = new { @class = "form-control datepicker" } })*@
-                @Html.TextBoxFor(model => model.RegisterTime, "{0:d}", new { @class = "form-control datepicker" })
-                @Html.ValidationMessageFor(model => model.RegisterTime, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(model => model.DateTo, "{0:d}", new { @class = "form-control datepicker" })
+                @Html.ValidationMessageFor(model => model.DateTo, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <a href="@Url.Action("Index")" class="btn btn-default btn-lg">
+                <a href="@Url.Action("Details/" + Url.RequestContext.RouteData.Values["id"].ToString())" class="btn btn-default btn-lg">
                     <span class="glyphicon glyphicon-arrow-left"></span> Back
                 </a>
-                <a href="@Url.Action("CreatePdf", new { id = Url.RequestContext.RouteData.Values["id"] })" class="btn btn-default btn-lg">
-                    <span></span> Generate Invoice
-                </a>
+                <button type="submit" class="btn btn-success btn-lg margin-right">
+                    <span class="glyphicon glyphicon-save"></span> Create
+                </button>
             </div>
         </div>
     </div>

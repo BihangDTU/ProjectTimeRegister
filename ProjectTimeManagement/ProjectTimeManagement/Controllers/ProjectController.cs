@@ -17,18 +17,17 @@ namespace ProjectTimeManagement.Controllers
     public class ProjectController : Controller
     {
         ProjectContext db = new ProjectContext();
-
+        // Display the list of created projects.
         public ActionResult Index()
         {
             List<Project> project = db.Projects.OrderByDescending(e => e.CreatedTime)
                                     .ThenByDescending(e => e.ProjectId).ToList();
-
             return View(project);
         }
 
         [HttpGet]
         public ActionResult Create()
-        {
+        {   // Display current date on Date filed.
             var project = new ProjectViewModel()
             {
                 CreatedTime = DateTime.Today
@@ -36,7 +35,7 @@ namespace ProjectTimeManagement.Controllers
             return View(project);
         }
 
-        // POST: Project/Create
+        // POST: Creat a new project. Enter project  and customer informations.
         [HttpPost]
         public ActionResult Create(ProjectViewModel model)
         {
@@ -71,7 +70,7 @@ namespace ProjectTimeManagement.Controllers
             }
 
             if (ModelState.IsValid)
-            {
+            {   // save customer info to DB
                 Customer c = new Customer();
                 c.CustomerName = model.CustomerName;
                 c.Email = model.Email;
@@ -79,7 +78,7 @@ namespace ProjectTimeManagement.Controllers
                 c.Address = model.Address;
                 db.Customers.Add(c);
                 db.SaveChanges();
-
+                //save project info to Db
                 Project p = new Project();
                 p.CreatorName = model.CreatorName;
                 p.ProjectName = model.ProjectName;
@@ -95,7 +94,7 @@ namespace ProjectTimeManagement.Controllers
 
         [HttpGet]
         public ActionResult Register()
-        {
+        {   // Display current date on RegisterTime filed.
             var timeTable = new TimeTable()
             {
                 RegisterTime = DateTime.Today
@@ -103,7 +102,7 @@ namespace ProjectTimeManagement.Controllers
             return View(timeTable);
         }
 
-        // POST: Project/Create
+        // POST: register time spent on the project.
         [HttpPost]
         public ActionResult Register(int? id, TimeTable timeTable)
         {
@@ -128,7 +127,7 @@ namespace ProjectTimeManagement.Controllers
             }
 
             if (ModelState.IsValid)
-            {
+            {   //store register time on DB(TimeTable)
                 TimeTable t = new TimeTable();
                 t.ProjectId = id ?? default(int);
                 t.RegisterTime = timeTable.RegisterTime;
@@ -141,16 +140,19 @@ namespace ProjectTimeManagement.Controllers
             }
             return View(timeTable);
         }
+
+        // overview of time spent on each project.
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             List<TimeTable> timeTableList = (from timeTable in db.TimeTables
                                              where timeTable.ProjectId == id
-                                             select timeTable).ToList();
+                                             select timeTable)
+                                             .OrderBy(e => e.RegisterTime)
+                                             .ThenBy(e =>e.Id).ToList();
             string totalHours = (from tT in db.TimeTables
                                  where tT.ProjectId == id
                                  select tT.Hours).ToList().Sum().ToString();
@@ -164,57 +166,49 @@ namespace ProjectTimeManagement.Controllers
             return View(timeTableList);
         }
 
-        public ActionResult GenerateInvoice(int? id)
-        {
-            return View();
-        }
-
-        // GET: Project/Edit/5
         [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             TimeTable timeTableDatabase = (from tT in db.TimeTables
-                                                 where tT.Id == id
-                                                 select tT).FirstOrDefault();
-
+                                           where tT.Id == id
+                                           select tT).FirstOrDefault();
             TimeTable timeTble = new TimeTable()
             {
                 RegisterName = timeTableDatabase.RegisterName,
                 Hours = timeTableDatabase.Hours
             };
-
             return View(timeTble);
         }
 
-        // POST: Project/Edit/5
+        // POST: Edit register time.
         [HttpPost]
         public ActionResult Edit(int? id, TimeTable collection)
         {
-
             TimeTable timeTable = (from tT in db.TimeTables
-                                    where tT.Id == id
-                                    select tT).FirstOrDefault();
-
+                                   where tT.Id == id
+                                   select tT).FirstOrDefault();
             timeTable.RegisterName = collection.RegisterName;
             timeTable.Hours = collection.Hours;
             db.SaveChanges();
-
             return RedirectToAction("Details/" + timeTable.ProjectId.ToString());
         }
 
+        // display customer information.
         public ActionResult CustomerInfo(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             Project project = (from p in db.Projects
-                             where p.ProjectId == id
-                             select p).FirstOrDefault();
-
+                               where p.ProjectId == id
+                               select p).FirstOrDefault();
             Customer customer = (from c in db.Customers
-                               where c.CustomerId == project.ProjectId
+                                 where c.CustomerId == project.ProjectId
                                  select c).FirstOrDefault();
             if (customer == null)
             {
@@ -223,7 +217,42 @@ namespace ProjectTimeManagement.Controllers
             ViewBag.ProjectName = project.ProjectName;
             return View(customer);
         }
+        // display customer old information for editing.
+        [HttpGet]
+        public ActionResult EditCustomerInfo(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Customer customerDB = (from c in db.Customers
+                                   where c.CustomerId == id
+                                   select c).FirstOrDefault();
+            Customer timeTble = new Customer()
+            {
+                CustomerName = customerDB.CustomerName,
+                Email = customerDB.Email,
+                Phone = customerDB.Phone,
+                Address = customerDB.Address
+            };
+            return View(timeTble);
+        }
 
+        // Edit customer information.
+        [HttpPost]
+        public ActionResult EditCustomerInfo(int? id, Customer customer)
+        {
+            Customer customerDB = (from c in db.Customers
+                                   where c.CustomerId == id
+                                   select c).FirstOrDefault();
+
+            customerDB.CustomerName = customer.CustomerName;
+            customerDB.Email = customer.Email;
+            customerDB.Phone = customer.Phone;
+            customerDB.Address = customer.Address;
+            db.SaveChanges();
+            return RedirectToAction("CustomerInfo/" + id.ToString());
+        }
 
 
         public ActionResult DeleteRegister(int? id)
@@ -242,14 +271,13 @@ namespace ProjectTimeManagement.Controllers
             return View(timeTable);
         }
 
-        // POST: Project/Delete/5
+        // delete one register time.
         [HttpPost]
         public ActionResult DeleteRegister(int id)
         {
             TimeTable timeTable = (from tT in db.TimeTables
                                    where tT.Id == id
                                    select tT).FirstOrDefault();
-
             db.TimeTables.Remove(timeTable);
             db.SaveChanges();
             return RedirectToAction("Details/" + timeTable.ProjectId.ToString());
@@ -271,7 +299,7 @@ namespace ProjectTimeManagement.Controllers
             return View(project);
         }
 
-        // POST: Project/DeleteProject
+        // delete entire project include the corresponding time table.
         [HttpPost]
         public ActionResult DeleteProject(int id)
         {
@@ -292,11 +320,46 @@ namespace ProjectTimeManagement.Controllers
             return RedirectToAction("Index");
         }
 
-        string accountNo = "0123456789012";
-        string accountName = "John Willion";
-        string branch = "Phahon Yothin Branch";
-        string bank = "Kasikorn Bank";
+        [HttpGet]
+        public ActionResult GenerateInvoice(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return View();
+        }
 
+        [HttpPost]
+        public ActionResult GenerateInvoice(int? id, DateRange dateRange)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //Server - Side Validation
+            if (ModelState.IsValidField("DateFrom") && dateRange.DateFrom > DateTime.Today)
+            {
+                ModelState.AddModelError("DateFrom", "Start date can not be later than today.");
+            }
+            if (ModelState.IsValidField("DateTo") && dateRange.DateTo < dateRange.DateFrom)
+            {
+                ModelState.AddModelError("DateTo", "End date can not be earlier than start date.");
+            }
+            if (ModelState.IsValid)
+            {
+               // CreatePdf(id);  // not working inside ActionResult function, need to fix later. 
+                return RedirectToAction("Details/" + id.ToString());
+            }
+            return View();
+        }
+
+        // Bank info 
+        string accountNo = "0123456789012"; 
+        string accountName = "John Willion";
+        string bank = "Dansk Bank";
+        // create PDF invoice. 
+        //public FileResult CreatePdf(int? id, DateRange) //for generate periodic invoice.
         public FileResult CreatePdf(int? id)
         {
             MemoryStream workStream = new MemoryStream();
@@ -311,16 +374,13 @@ namespace ProjectTimeManagement.Controllers
             var titleFont = FontFactory.GetFont("Arial", 14, Font.BOLD);
             var boldTableFont = FontFactory.GetFont("Arial", 10, Font.BOLD);
             var bodyFont = FontFactory.GetFont("Arial", 10, Font.NORMAL);
-           // Rectangle pageSize = writer.PageSize;
 
             //Create PDF Table with 3 columns  
             PdfPTable tableLayout = new PdfPTable(3);
-           // doc.SetMargins(0f, 0f, 0f, 0f);
             //Create PDF Table  
 
             //file will created in this path  
             string strAttachment = Server.MapPath("~/Downloadss/" + strPDFFileName);
-
 
             PdfWriter.GetInstance(doc, workStream).CloseStream = false;
             doc.Open();
@@ -339,10 +399,10 @@ namespace ProjectTimeManagement.Controllers
             PdfPCell nextPostCell1 = new PdfPCell(new Phrase("ABC Co.,Ltd", bodyFont));
             nextPostCell1.Border = Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
             nested.AddCell(nextPostCell1);
-            PdfPCell nextPostCell2 = new PdfPCell(new Phrase("111/206 Moo 9, Ramkhamheang Road,", bodyFont));
+            PdfPCell nextPostCell2 = new PdfPCell(new Phrase("Bygning 101A Anker Engelunds Vej 1,", bodyFont));
             nextPostCell2.Border = Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
             nested.AddCell(nextPostCell2);
-            PdfPCell nextPostCell3 = new PdfPCell(new Phrase("Nonthaburi 11120", bodyFont));
+            PdfPCell nextPostCell3 = new PdfPCell(new Phrase("2800 Kgs. Lyngby", bodyFont));
             nextPostCell3.Border = Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
             nested.AddCell(nextPostCell3);
             PdfPCell nesthousing = new PdfPCell(nested);
@@ -381,8 +441,8 @@ namespace ProjectTimeManagement.Controllers
             doc.Add(headertable);
             #endregion
 
-
             //Add Content to PDF   
+            //doc.Add(Add_Content_To_PDF(id, tableLayout, DateRange) //for generate periodic invoice.
             doc.Add(Add_Content_To_PDF(id,tableLayout));
 
             string totalHours = (from tT in db.TimeTables
@@ -425,14 +485,10 @@ namespace ProjectTimeManagement.Controllers
             bottomTable.AddCell(new Phrase("Account Name", bodyFont));
             bottomTable.AddCell(":");
             bottomTable.AddCell(new Phrase(accountName, bodyFont));
-            bottomTable.AddCell(new Phrase("Branch", bodyFont));
-            bottomTable.AddCell(":");
-            bottomTable.AddCell(new Phrase(branch, bodyFont));
             bottomTable.AddCell(new Phrase("Bank", bodyFont));
             bottomTable.AddCell(":");
             bottomTable.AddCell(new Phrase(bank, bodyFont));
             doc.Add(bottomTable);
-
 
             // Closing the document  
             doc.Close();
@@ -441,10 +497,10 @@ namespace ProjectTimeManagement.Controllers
             workStream.Write(byteInfo, 0, byteInfo.Length);
             workStream.Position = 0;
 
-
             return File(workStream, "application/pdf", strPDFFileName);
         }
 
+        //protected PdfPTable Add_Content_To_PDF(int? id, PdfPTable tableLayout, DateRange dateRange) //for generate periodic invoice.
         protected PdfPTable Add_Content_To_PDF(int? id, PdfPTable tableLayout)
         {
              float[] headers = { 40, 40, 40 }; //Header Widths  
@@ -453,8 +509,11 @@ namespace ProjectTimeManagement.Controllers
              tableLayout.HeaderRows = 1;
 
             List<TimeTable> timeTable = (from tT in db.TimeTables
+                                         // where tT.ProjectId == id && tT.RegisterTime >= dateRange.DateFrom && tT.RegisterTime <= dateRange.DateTo
                                          where tT.ProjectId == id
-                                         select tT).ToList();
+                                         select tT)
+                                         .OrderBy(e => e.RegisterTime)
+                                         .ThenBy(e => e.Id).ToList();
 
             string projectName = (from p in db.Projects
                                   where p.ProjectId == id
@@ -468,14 +527,12 @@ namespace ProjectTimeManagement.Controllers
             AddCellToHeader(tableLayout, "Hours");
 
             ////Add body  
-
             foreach (var content in timeTable)
             {
                 AddCellToBody(tableLayout, content.RegisterTime.ToString());
                 AddCellToBody(tableLayout, content.RegisterName);
                 AddCellToBody(tableLayout, content.Hours.ToString());
             }
-
             return tableLayout;
         }
 
@@ -496,6 +553,5 @@ namespace ProjectTimeManagement.Controllers
                 HorizontalAlignment = Element.ALIGN_LEFT, Padding = 5, BackgroundColor = new iTextSharp.text.BaseColor(255, 255, 255)
             });
         }
-
     }
 }

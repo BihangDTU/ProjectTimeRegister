@@ -159,6 +159,7 @@
     </Compile>
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\ProjectViewModel.cs" />
+    <Compile Include="Models\DateRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +210,7 @@
     <Content Include="Views\Project\DeleteProject.cshtml" />
     <Content Include="Views\Project\CustomerInfo.cshtml" />
     <Content Include="Views\Project\GenerateInvoice.cshtml" />
+    <Content Include="Views\Project\EditCustomerInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
